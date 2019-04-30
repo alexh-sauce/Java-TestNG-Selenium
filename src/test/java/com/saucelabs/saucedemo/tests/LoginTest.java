@@ -1,27 +1,47 @@
 package com.saucelabs.saucedemo.tests;
 
-import com.saucelabs.saucedemo.Pages.InventoryPage;
-import com.saucelabs.saucedemo.Pages.LoginPage;
+import com.saucelabs.saucedemo.pages.InventoryPage;
+import com.saucelabs.saucedemo.pages.LoginPage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class LoginTest extends BaseWebDriverTest {
-    @Test(dataProvider = "sauceBrowsers")
-    public void loginTestValid(String browser, String browserVersion, String platformName, RunType runType) {
-        this.createDriver(browser, browserVersion, platformName, "loginTest", runType);
-        LoginPage loginPage = new LoginPage(getWebDriver());
-        InventoryPage inventoryPage = new InventoryPage(getWebDriver());
-        loginPage.visitPage();
-        loginPage.login("standard_user", "secret_sauce");
+    @Test
+    public void loginTestValid() {
+        InventoryPage inventoryPage = getNavigation().login("standard_user", "secret_sauce");
         Assert.assertTrue(inventoryPage.isOnPage());
     }
 
-    @Test(dataProvider = "sauceBrowsers")
-    public void loginTestInvalid(String browser, String browserVersion, String platformName, RunType runType) {
-        this.createDriver(browser, browserVersion, platformName, "loginTest", runType);
-        LoginPage loginPage = new LoginPage(getWebDriver());
-        loginPage.visitPage();
+    @Test
+    public void loginTestValidPerfGlitch() {
+        InventoryPage inventoryPage = getNavigation().login("performance_glitch_user", "secret_sauce");
+        Assert.assertTrue(inventoryPage.isOnPage());
+    }
+
+    @Test
+    public void loginTestValidLockedOut() {
+        LoginPage loginPage = getNavigation().getLoginPage();
+        loginPage.login("locked_out_user", "secret_sauce");
+        Assert.assertTrue(loginPage.epicSadFaceDisplayed());
+    }
+
+    @Test
+    public void loginTestValidProblem() {
+        InventoryPage inventoryPage = getNavigation().login("problem_user", "secret_sauce");
+        Assert.assertTrue(inventoryPage.isOnPage());
+    }
+
+    @Test
+    public void loginTestInvalidUsername() {
+        LoginPage loginPage = getNavigation().getLoginPage();
         loginPage.login("invalid_user", "secret_sauce");
+        Assert.assertTrue(loginPage.isOnPage());
+    }
+
+    @Test
+    public void loginTestInvalidPassword() {
+        LoginPage loginPage = getNavigation().getLoginPage();
+        getNavigation().login("standard_user", "invalid_password");
         Assert.assertTrue(loginPage.isOnPage());
     }
 }
