@@ -49,14 +49,16 @@ public class TestBase  {
      * @return Two dimensional array of objects with browser, version, and platform information
      */
     @DataProvider(name = "hardCodedBrowsers", parallel = true)
+
+    // Headless only supports Firefox and Chrome in Linux
     public static Object[][] sauceBrowserDataProvider(Method testMethod) {
         return new Object[][]{
-                new Object[]{"MicrosoftEdge", "17.17134", "Windows 10"},
-                new Object[]{"firefox", "latest", "Windows 10"},
-                new Object[]{"internet explorer", "11", "Windows 8.1"},
-                new Object[]{"safari", "12.0", "macOS 10.13"},
-                new Object[]{"chrome", "70", "macOS 10.13"},
-                new Object[]{"firefox", "latest-1", "Windows 7"},
+                new Object[]{"firefox", "latest", "Linux"},
+                new Object[]{"firefox", "latest-1", "Linux"},
+                new Object[]{"firefox", "latest-2", "Linux"},
+                new Object[]{"chrome", "latest", "Linux"},
+                new Object[]{"chrome", "latest-1", "Linux"},
+                new Object[]{"chrome", "latest-2", "Linux"},
         };
     }
 
@@ -103,7 +105,7 @@ public class TestBase  {
 
         // Launch remote browser and set it as the current thread
         webDriver.set(new RemoteWebDriver(
-                new URL("https://" + username + ":" + accesskey + "@ondemand.saucelabs.com/wd/hub"),
+                new URL("https://" + username + ":" + accesskey + "@ondemand.us-east-1.saucelabs.com/wd/hub"),
                 capabilities));
 
         // set current sessionId
